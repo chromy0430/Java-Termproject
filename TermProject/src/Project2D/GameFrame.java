@@ -20,5 +20,6 @@ public class GameFrame extends JFrame
 		setResizable(false);
 		
 		gamePanel.startGameThread();
+		gamePanel.requestFocus();
 	}
 }
