@@ -6,6 +6,7 @@ Java Termproject - Game Programming
 2D 박스헤드 게임을 모티브로 하여 구현 예정
 
 / = 예정 
+<br>
 X = 완료
 
   ---
@@ -27,7 +28,9 @@ X = 완료
    
     
 / png파일(Sprite) 움직임 구현 (인풋 키 인식과 그에 따른 움직임)
+<br>
 / 투사체 발사 구현
+<br>
 /
 
 ---
