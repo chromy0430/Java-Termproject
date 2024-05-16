@@ -11,7 +11,14 @@ public class GameFrame extends JFrame
 		setTitle("GAME");
 		setVisible(true);
 		
+		GamePanel gamePanel = new GamePanel();
+		add(gamePanel);
+		
+		pack();
+		
 		setLocationRelativeTo(null);
 		setResizable(false);
+		
+		gamePanel.startGameThread();
 	}
 }
