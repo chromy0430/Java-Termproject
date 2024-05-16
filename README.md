@@ -6,7 +6,7 @@ Java Termproject - Game Programming
 2D 박스헤드 게임을 모티브로 하여 구현 예정
 
 / = 예정 
-+ = 완료
+* = 완료
 
   ---
 / JFrame을 이용한 게임화면 구현
