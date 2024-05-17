@@ -33,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 	//test
 	//2번째 테스트
 	//3rd test
+	//4 test
 	
 	public GamePanel()
 	{
