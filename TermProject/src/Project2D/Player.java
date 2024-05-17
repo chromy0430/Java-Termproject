@@ -71,6 +71,7 @@ public class Player extends Entity {
 		{
 			x += speed;
 		}
+		// 디벨롭 브랜치
 	}
 
 	public void draw(Graphics2D g2) {
