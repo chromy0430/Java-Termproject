@@ -2,6 +2,6 @@ package Project2D;
 
 public class Entity 
 {
-	private int HP;
-	 
+	public int x, y;
+	public int speed;
 }

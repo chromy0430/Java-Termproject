@@ -15,7 +15,7 @@ public class KeyHandler implements KeyListener// 키보드 입력을 받는 클�
 	public void keyPressed(KeyEvent e)
 	{
 		int code = e.getKeyCode();
-		System.out.println(code);
+//		System.out.println(code);
 		
 		if(code == KeyEvent.VK_W)
 		{
