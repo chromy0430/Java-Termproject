@@ -141,23 +141,6 @@ public class Player extends Entity {
 				spriteCounter = 0;
 			}
 		}
-<<<<<<< HEAD
-
-=======
-		if (keyH.downPressed == true) // S키 눌리면
-		{
-			y += speed;
-		}
-		if (keyH.leftPressed == true) // A키 눌리면
-		{
-			x -= speed;
-		}
-		if (keyH.rightPressed == true) // D키 눌리면
-		{
-			x += speed;
-		}
-		// 디벨롭 브랜치
->>>>>>> branch 'main' of https://github.com/chromy0430/Java-Termproject.git
 	}
 
 	public void draw(Graphics2D g2) {
