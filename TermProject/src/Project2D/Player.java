@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import java.awt.image.*;
@@ -11,12 +12,22 @@ import java.awt.image.*;
 public class Player extends Entity {
 
 	GamePanel gp;
-	KeyHandler keyH;
+	KeyHandler keyH;	
+	
+	//22:07 추가
+	MouseHandler mouseH; // 마우스로부터 입력 받는 클래스 초기화 22:07 추가
+	ArrayList<Projectile> projectiles; // 투사체 관리
+	private long lastShotTime; // 쿨타임 계산용 시간
+	private long shotCooldown = 500; // 0.5초 쿨타임 설정
 
-	public Player(GamePanel gp, KeyHandler keyH) {
+	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
 		this.gp = gp;
 		this.keyH = keyH;
+		
+		//22:07 추가
+		this.mouseH = mouseH;
+		this.projectiles = new ArrayList<>();
 
 		setDefaultValues();
 		getPlayerImage();
@@ -28,6 +39,8 @@ public class Player extends Entity {
 		y = 100;
 		speed = 4;
 		direction = "down";
+		
+		lastShotTime = 0; //쿨타임 계산용 22:07 추가
 	}
 
 	public void getPlayerImage() {
@@ -162,6 +175,21 @@ public class Player extends Entity {
 	            // 스프라이트 카운터 리셋
 	            spriteCounter = 0;
 	        }
+	        
+	        long currentTime = System.currentTimeMillis(); // 현재 시간
+	        if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) 
+	        {
+	            projectiles.add(new Projectile(x, y));
+	            lastShotTime = currentTime; // 마지막 발사 시간 갱신
+	        }
+	        
+	        for (Projectile projectile : projectiles)
+			{
+				projectile.update();			
+			}
+			
+			projectiles.removeIf(p -> p.y < 0); // 화면밖으로 투사체가 나갈 시 자동으로 삭제
+	        
 	    }
 	}
 
@@ -268,6 +296,12 @@ public class Player extends Entity {
 			break;
 		}
 		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
-
+		
+		//투사체 그리기
+		for (Projectile projectile : projectiles)
+		{
+			projectile.draw(g2);
+		}
+		
 	}
 }
