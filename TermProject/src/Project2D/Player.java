@@ -96,52 +96,52 @@ public class Player extends Entity {
 //			x += speed;
 //		}
 		// 대각선 구현완료
-		if (keyH.upPressed == true || keyH.downPressed || keyH.leftPressed || keyH.leftPressed) {
-			
-		}
-		
-		if (keyH.upPressed == true) // W키 눌리면
-		{
-			direction = "up";
-			y -= speed;
-		}
-		if (keyH.downPressed == true) // S키 눌리면
-		{
-			direction = "down";
-			y += speed;
-		}
-		if (keyH.leftPressed == true) // A키 눌리면
-		{
-			direction = "left";
-			x -= speed;
-		}
-		if (keyH.rightPressed == true) // D키 눌리면
-		{
-			direction = "right";
-			x += speed;
+		if (keyH.upPressed == true || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+
+			if (keyH.upPressed == true) // W키 눌리면
+			{
+				direction = "up";
+				y -= speed;
+			}
+			if (keyH.downPressed == true) // S키 눌리면
+			{
+				direction = "down";
+				y += speed;
+			}
+			if (keyH.leftPressed == true) // A키 눌리면
+			{
+				direction = "left";
+				x -= speed;
+			}
+			if (keyH.rightPressed == true) // D키 눌리면
+			{
+				direction = "right";
+				x += speed;
+			}
+
+			spriteCounter++;
+			if (spriteCounter > 10) {
+				if (spriteNum == 1) {
+					spriteNum = 2;
+				} else if (spriteNum == 2) {
+					spriteNum = 3;
+				} else if (spriteNum == 3) {
+					spriteNum = 4;
+				} else if (spriteNum == 4) {
+					spriteNum = 5;
+				} else if (spriteNum == 5) {
+					spriteNum = 6;
+				} else if (spriteNum == 6) {
+					spriteNum = 7;
+				} else if (spriteNum == 7) {
+					spriteNum = 1;
+				} else if (spriteNum == 2) {
+					spriteNum = 1;
+				}
+				spriteCounter = 0;
+			}
 		}
 
-		spriteCounter++;
-		if (spriteCounter > 10) {
-			if (spriteNum == 1) {
-				spriteNum = 2;
-			} else if (spriteNum == 2) {
-				spriteNum = 3;
-			} else if (spriteNum == 3) {
-				spriteNum = 4;
-			} else if (spriteNum == 4) {
-				spriteNum = 5;
-			} else if (spriteNum == 5) {
-				spriteNum = 6;
-			} else if (spriteNum == 6) {
-				spriteNum = 7;
-			} else if (spriteNum == 7) {
-				spriteNum = 1;
-			} else if (spriteNum == 2) {
-				spriteNum = 1;
-			}
-			spriteCounter = 0;
-		}
 	}
 
 	public void draw(Graphics2D g2) {
