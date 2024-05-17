@@ -16,12 +16,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	public final int tileSize = originalTileSize * scale; // 48*48 타일 크기
 	final int maxScreenCol = 16; // 화면에 표시될 최대 가로 수
 	final int maxScreenRow = 12; // 화면에 표시될 최대 세로 수
-	final int screenWidth = tileSize * maxScreenCol; // 화면 너비 768픽셀
-	final int screenHeight = tileSize * maxScreenRow; // 화면 높이 576픽셀
+	final int screenWidth = 1600;//tileSize * maxScreenCol; // 화면 너비 768픽셀
+	final int screenHeight = 900;//tileSize * maxScreenRow; // 화면 높이 576픽셀
 
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
+	MouseHandler mouseH = new MouseHandler();
 	Thread gameThread; // 게임 쓰레드
-	Player player = new Player(this, keyH);
+	Player player = new Player(this, keyH, mouseH);
 
 	// FPS 설정
 	int FPS = 60; // 초당 프레임
@@ -38,6 +39,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 		this.setFocusable(true); // 이 컴포넌트로부터 먼저 키를 입력 받을 수 있다.
 		this.addKeyListener(keyH); // 키 리스너 추가
+		this.addMouseListener(mouseH);
 	}
 	
 	public void startGameThread() {

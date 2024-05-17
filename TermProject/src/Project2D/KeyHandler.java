@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener// 키보드 입력을 받는 클래스
 {
-	public boolean upPressed, downPressed, leftPressed, rightPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, spacePressed;
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -33,6 +33,10 @@ public class KeyHandler implements KeyListener// 키보드 입력을 받는 클�
 		{
 			rightPressed = true;
 		}
+		if (code == KeyEvent.VK_SPACE) 
+		{
+            spacePressed = true;
+        }
 		
 	}
 	@Override
@@ -56,5 +60,9 @@ public class KeyHandler implements KeyListener// 키보드 입력을 받는 클�
 		{
 			rightPressed = false;
 		}
+		if (code == KeyEvent.VK_SPACE) 
+		{
+            spacePressed = false;
+        }
 	}
 }
