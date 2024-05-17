@@ -3,6 +3,9 @@ package Project2D;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Player extends Entity {
 	
@@ -21,6 +24,17 @@ public class Player extends Entity {
 		x = 100;
 		y = 100;
 		speed = 4;
+	}
+	
+	public void getPlayerImage() {
+		try {
+			
+			up1 = ImageIO.read(getClass().getResourceAsStream("/player/golem-walk.png"));
+			
+			
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void update() {
