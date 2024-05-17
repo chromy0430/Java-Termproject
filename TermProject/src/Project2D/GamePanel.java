@@ -30,10 +30,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener
 	int playerX = 100;
 	int playerY = 100;
 	int playerSpeed = 10;
-	//test
-	//2번째 테스트
-	//3rd test
-	//4 test
+	
 	
 	public GamePanel()
 	{
