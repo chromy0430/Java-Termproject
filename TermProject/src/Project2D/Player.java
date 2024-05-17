@@ -96,51 +96,73 @@ public class Player extends Entity {
 //			x += speed;
 //		}
 		// 대각선 구현완료
-		if (keyH.upPressed == true || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+		// 수평 이동 여부를 확인하기 위한 플래그
+	    boolean movingHorizontally = false;
+	    // 수직 이동 여부를 확인하기 위한 플래그
+	    boolean movingVertically = false;
 
-			if (keyH.upPressed == true) // W키 눌리면
-			{
-				direction = "up";
-				y -= speed;
-			}
-			if (keyH.downPressed == true) // S키 눌리면
-			{
-				direction = "down";
-				y += speed;
-			}
-			if (keyH.leftPressed == true) // A키 눌리면
-			{
-				direction = "left";
-				x -= speed;
-			}
-			if (keyH.rightPressed == true) // D키 눌리면
-			{
-				direction = "right";
-				x += speed;
-			}
+	    // 플레이어가 어느 방향이든 이동 중인 경우
+	    if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+	        // 위로 이동 중인 경우
+	        if (keyH.upPressed) {
+	            direction = "up";
+	            movingVertically = true;
+	        }
+	        // 아래로 이동 중인 경우
+	        if (keyH.downPressed) {
+	            direction = "down";
+	            movingVertically = true;
+	        }
+	        // 왼쪽으로 이동 중인 경우
+	        if (keyH.leftPressed) {
+	            direction = "left";
+	            movingHorizontally = true;
+	        }
+	        // 오른쪽으로 이동 중인 경우
+	        if (keyH.rightPressed) {
+	            direction = "right";
+	            movingHorizontally = true;
+	        }
 
-			spriteCounter++;
-			if (spriteCounter > 10) {
-				if (spriteNum == 1) {
-					spriteNum = 2;
-				} else if (spriteNum == 2) {
-					spriteNum = 3;
-				} else if (spriteNum == 3) {
-					spriteNum = 4;
-				} else if (spriteNum == 4) {
-					spriteNum = 5;
-				} else if (spriteNum == 5) {
-					spriteNum = 6;
-				} else if (spriteNum == 6) {
-					spriteNum = 7;
-				} else if (spriteNum == 7) {
-					spriteNum = 1;
-				} else if (spriteNum == 2) {
-					spriteNum = 1;
-				}
-				spriteCounter = 0;
-			}
-		}
+	        // 기본 속도를 임시 변수에 저장
+	        double adjustedSpeed = speed;
+	        // 수평 및 수직으로 동시에 이동 중인 경우 (대각선 이동)
+	        if (movingHorizontally && movingVertically) {
+	            // 속도를 조정하여 대각선 이동 시 과도한 속도 증가 방지
+	            adjustedSpeed = speed / Math.sqrt(2);
+	        }
+
+	        // 위로 이동
+	        if (keyH.upPressed) {
+	            y -= adjustedSpeed;
+	        }
+	        // 아래로 이동
+	        if (keyH.downPressed) {
+	            y += adjustedSpeed;
+	        }
+	        // 왼쪽으로 이동
+	        if (keyH.leftPressed) {
+	            x -= adjustedSpeed;
+	        }
+	        // 오른쪽으로 이동
+	        if (keyH.rightPressed) {
+	            x += adjustedSpeed;
+	        }
+
+	        // 스프라이트 카운터 증가
+	        spriteCounter++;
+	        // 스프라이트 카운터가 일정 수를 초과하면
+	        if (spriteCounter > 10) {
+	            // 스프라이트 번호 증가
+	            spriteNum++;
+	            // 스프라이트 번호가 7을 초과하면 다시 1로 리셋
+	            if (spriteNum > 7) {
+	                spriteNum = 1;
+	            }
+	            // 스프라이트 카운터 리셋
+	            spriteCounter = 0;
+	        }
+	    }
 	}
 
 	public void draw(Graphics2D g2) {
