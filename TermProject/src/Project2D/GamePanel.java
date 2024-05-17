@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		this.setFocusable(true); // 이 컴포넌트로부터 먼저 키를 입력 받을 수 있다.
 		this.addKeyListener(keyH); // 키 리스너 추가
 		this.addMouseListener(mouseH);
+		
 	}
 	
 	public void startGameThread() {

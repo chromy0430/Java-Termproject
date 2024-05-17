@@ -19,6 +19,10 @@ public class Projectile extends Entity
 	
 	public void draw(Graphics2D g2)
 	{
+		if (g2 == null) { //1217
+	        return; // g2가 null이면 작업 중단 
+	    }
+		
 		g2.setColor(Color.red);
 		g2.fillRoundRect(x, y, 10, 10, 10, 10);
 	}
