@@ -5,16 +5,32 @@ import java.awt.Graphics2D;
 
 public class Projectile extends Entity
 {
-	public Projectile(int x, int y)
+	double dx, dy;
+	double speed = 5.0;
+	
+//	public Projectile(int x, int y) // 원본
+//	{
+//		this.x = x;
+//		this.y = y;
+//		this.speed = 5;		
+//	}
+	
+	public Projectile(int startX, int startY, int targetX, int targetY) 
 	{
-		this.x = x + 20;
-		this.y = y;
-		this.speed = 5;
-	}
+        this.x = startX + 20; // 투사체가 발사되는 좌표
+        this.y = startY; // 투사체가 발사되는 좌표
+        
+        // 방향 계산
+        double angle = Math.atan2(targetY - startY, targetX - startX);
+        this.dx = Math.cos(angle) * speed;
+        this.dy = Math.sin(angle) * speed;
+    }
 	
 	public void update()
 	{
-		y -= speed;
+		x += dx;
+		y += dy;
+		//y -= speed;
 	}
 	
 	public void draw(Graphics2D g2)

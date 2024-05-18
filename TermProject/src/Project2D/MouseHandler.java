@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 
 public class MouseHandler extends MouseAdapter 
 {
-	public boolean mousePressed;
+	public boolean mousePressed;	
 	
 	@Override
 	public void mousePressed(MouseEvent e) 

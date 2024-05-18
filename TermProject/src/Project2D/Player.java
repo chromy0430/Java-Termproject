@@ -19,6 +19,10 @@ public class Player extends Entity {
 	ArrayList<Projectile> projectiles; // 투사체 관리
 	private long lastShotTime; // 쿨타임 계산용 시간
 	private long shotCooldown = 500; // 0.5초 쿨타임 설정
+	
+	// 5월18일 11:59 추가
+	//public int mouseCursorX, mouseCursorY; // 마우스커서 x,y 추적좌표 변수
+	
 
 	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
@@ -87,7 +91,7 @@ public class Player extends Entity {
 		}
 	}
 
-	public void update() {
+	public void update() {		
 		
 		// 수평 이동 여부를 확인하기 위한 플래그
 	    boolean movingHorizontally = false;
@@ -161,8 +165,9 @@ public class Player extends Entity {
 		}
 
 		long currentTime = System.currentTimeMillis(); // 현재 시간
-		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {
-			projectiles.add(new Projectile(x, y));
+		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {	
+			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));            
+			//projectiles.add(new Projectile(x, y)); // 원본
 			lastShotTime = currentTime; // 마지막 발사 시간 갱신
 		}
 
@@ -170,7 +175,10 @@ public class Player extends Entity {
 			projectile.update();
 		}
 
-		projectiles.removeIf(p -> p.y < 0); // 화면밖으로 투사체가 나갈 시 자동으로 삭제
+		//projectiles.removeIf(p -> p.y < 0); // 원본 화면밖으로 투사체가 나갈 시 자동으로 삭제
+		// 화면 밖으로 나간 투사체 제거 (단순히 화면 위로 나간 경우만 체크)
+        projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth);
+    
 	}
 
 	public void draw(Graphics2D g2) {

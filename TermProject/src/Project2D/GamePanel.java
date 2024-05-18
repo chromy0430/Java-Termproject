@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements Runnable {
 	final int originalTileSize = 16; // 16x16 타일
 	final int scale = 3; // 타일 크기 배율
 
@@ -19,7 +19,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	final int screenWidth = tileSize * maxScreenCol; // 화면 너비 768픽셀
 	final int screenHeight = tileSize * maxScreenRow; // 화면 높이 576픽셀
 	
-	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 22:07 추가
+	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 17일 22:07 추가
+	MouseMotionHandler mouseMotionH = new MouseMotionHandler(); // 18일 12:15 추가
 	
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
 	Thread gameThread; // 게임 쓰레드
@@ -42,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		this.setFocusable(true); // 이 컴포넌트로부터 먼저 키를 입력 받을 수 있다.
 		this.addKeyListener(keyH); // 키 리스너 추가
 		this.addMouseListener(mouseH);
+		this.addMouseMotionListener(mouseMotionH);
 		
 	}
 	
@@ -94,35 +96,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 		player.draw(g2);
 		
+		// 조준점 그리기
+		g2.setColor(Color.red);
+        int crosshairSize = 10;
+        int crosshairX = mouseMotionH.mouseX - crosshairSize / 2;
+        int crosshairY = mouseMotionH.mouseY - crosshairSize / 2;
+        g2.drawOval(crosshairX, crosshairY, crosshairSize, crosshairSize);
+		
+        
 		g2.dispose();
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// 구현 필요 없음
-	}
 	
-	// UPDATE 고쳐서 주석 처리 해놓음
-	@Override
-	public void keyPressed(KeyEvent e) {
-//        int code = e.getKeyCode();
-//
-//        if (code == KeyEvent.VK_W) {
-//            playerY -= playerSpeed;
-//        }
-//        if (code == KeyEvent.VK_S) {
-//            playerY += playerSpeed;
-//        }
-//        if (code == KeyEvent.VK_A) {
-//            playerX -= playerSpeed;
-//        }
-//        if (code == KeyEvent.VK_D) {
-//            playerX += playerSpeed;
-//        }
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// 구현 필요 없음
-	}
 }
