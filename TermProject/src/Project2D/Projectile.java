@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 public class Projectile extends Entity
 {
 	double dx, dy;
-	double speed = 5.0;
+	double speed = 6.5;
 	
 //	public Projectile(int x, int y) // 원본
 //	{
@@ -15,7 +15,7 @@ public class Projectile extends Entity
 //		this.speed = 5;		
 //	}
 	
-	public Projectile(int startX, int startY, int targetX, int targetY) 
+	public Projectile(int startX, int startY, int targetX, int targetY) // 5월 18일 오전 추가
 	{
         this.x = startX + 20; // 투사체가 발사되는 좌표
         this.y = startY; // 투사체가 발사되는 좌표
@@ -41,5 +41,6 @@ public class Projectile extends Entity
 		
 		g2.setColor(Color.red);
 		g2.fillRoundRect(x, y, 10, 10, 10, 10);
+		
 	}
 }

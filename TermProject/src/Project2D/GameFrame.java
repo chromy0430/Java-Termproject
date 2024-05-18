@@ -9,7 +9,7 @@ public class GameFrame extends JFrame
 {
 	public GameFrame()
 	{
-		setSize(1200,800);
+		setSize(1600,800);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setTitle("GAME");
 		setVisible(true);
@@ -20,7 +20,7 @@ public class GameFrame extends JFrame
 		pack();
 		
 		//마우스 커서 삭제
-		this.setCursor(this.getToolkit().createCustomCursor( new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "null"));
+		//this.setCursor(this.getToolkit().createCustomCursor( new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "null"));
 		setLocationRelativeTo(null);
 		setResizable(false);
 		

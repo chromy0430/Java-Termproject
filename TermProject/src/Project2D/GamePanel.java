@@ -5,28 +5,32 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 
-public class GamePanel extends JPanel implements Runnable {
-	final int originalTileSize = 16; // 16x16 타일
+public class GamePanel extends JPanel implements Runnable 
+{
+	final int originalTileSize = 10; // 16x16 타일
 	final int scale = 3; // 타일 크기 배율
 
 	public final int tileSize = originalTileSize * scale; // 48*48 타일 크기
-	final int maxScreenCol = 16; // 화면에 표시될 최대 가로 수
-	final int maxScreenRow = 12; // 화면에 표시될 최대 세로 수
-	final int screenWidth = tileSize * maxScreenCol; // 화면 너비 768픽셀
-	final int screenHeight = tileSize * maxScreenRow; // 화면 높이 576픽셀
+	final int maxScreenCol = 32; // 화면에 표시될 최대 가로 수
+	final int maxScreenRow = 18; // 화면에 표시될 최대 세로 수
+	final int screenWidth = 1280;//tileSize * maxScreenCol; // 화면 너비 768픽셀
+	final int screenHeight = 720;//tileSize * maxScreenRow; // 화면 높이 576픽셀
 	
 	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 17일 22:07 추가
 	MouseMotionHandler mouseMotionH = new MouseMotionHandler(); // 18일 12:15 추가
+	
+	ArrayList<Monster> monsters = new ArrayList<>();	
 	
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
 	Thread gameThread; // 게임 쓰레드
 	
 	Player player = new Player(this, keyH, mouseH); // 마우스 클릭 매개변수 추가
-
+	
 	// FPS 설정
 	int FPS = 60; // 초당 프레임
 
@@ -34,6 +38,9 @@ public class GamePanel extends JPanel implements Runnable {
 	int playerX = 100; // 플레이어 초기 X 좌표
 	int playerY = 100; // 플레이어 초기 y 좌표
 	int playerSpeed = 4; // 플레이어 이동 속도
+	
+	//몬스터 기본 값초기화
+	int MobCount = 5;
 
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // 패널 크기 설정
@@ -43,8 +50,14 @@ public class GamePanel extends JPanel implements Runnable {
 		this.setFocusable(true); // 이 컴포넌트로부터 먼저 키를 입력 받을 수 있다.
 		this.addKeyListener(keyH); // 키 리스너 추가
 		this.addMouseListener(mouseH);
-		this.addMouseMotionListener(mouseMotionH);
+		this.addMouseMotionListener(mouseMotionH);		
 		
+		// 생성자 내부에서 몬스터 초기화
+		for (int i = 0; i < MobCount; i++) {
+		    int randomX = (int) (Math.random() * (screenWidth - tileSize));
+		    int randomY = (int) (Math.random() * (screenHeight - tileSize));
+		    monsters.add(new Monster(this, player, randomX, randomY));
+		}
 	}
 	
 	public void startGameThread() {
@@ -79,14 +92,19 @@ public class GamePanel extends JPanel implements Runnable {
 
 				drawCount = 0; // 프레임 수 초기화
 				timer = 0; // 타이머 초기화
-			}
-
+			}		
+			
 		}
 	}
 
 	public void update() {
 		
 		player.update();
+		
+		for (Monster monster : monsters)
+		{
+			monster.update();
+		}
 	}
 
 	public void paintComponent(Graphics g) {
@@ -96,13 +114,16 @@ public class GamePanel extends JPanel implements Runnable {
 
 		player.draw(g2);
 		
-		// 조준점 그리기
-		g2.setColor(Color.red);
+		// 조준점 그리기 5월 18일 추가
+		g2.setColor(Color.white);
         int crosshairSize = 10;
         int crosshairX = mouseMotionH.mouseX - crosshairSize / 2;
         int crosshairY = mouseMotionH.mouseY - crosshairSize / 2;
         g2.drawOval(crosshairX, crosshairY, crosshairSize, crosshairSize);
 		
+        for (Monster monster : monsters) {
+            monster.draw(g2);
+        }
         
 		g2.dispose();
 	}
