@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable
 	long GameStartTime; //레벨업 타이머 추가
 	boolean showLevelUp = false; // 레벨업 논리형 추가
 	boolean gamePaused = false;
+	long lastLevelUpTime;
 		
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
 	Thread gameThread; // 게임 쓰레드
@@ -70,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable
 	public void startGameThread() {
 		gameThread = new Thread(this); // 새 쓰레드 생성
 		GameStartTime = System.currentTimeMillis(); // 18일 오후 추가
+		//lastLevelUpTime = System.currentTimeMillis(); // 18일 오후 추가
 		gameThread.start(); // 쓰레드 시작
 	}
 
@@ -121,8 +123,12 @@ public class GamePanel extends JPanel implements Runnable
 		{
 	       showLevelUp = true;
 	       gamePaused = true;	
-	       GameStartTime = 0;
-	    }		
+
+	    }
+//		if (!showLevelUp && System.currentTimeMillis() - lastLevelUpTime >= 10000) {
+//	        showLevelUp = true;
+//	        gamePaused = true;
+//	    }
 	}
 
 	public void paintComponent(Graphics g) {
@@ -181,7 +187,8 @@ public class GamePanel extends JPanel implements Runnable
                 	showLevelUp = false;
                     gamePaused = false; // 게임 재개
                     mouseH.mousePressed = false; // 마우스 클릭 상태 초기화
-                    
+                    GameStartTime= System.currentTimeMillis();
+                    //lastLevelUpTime = System.currentTimeMillis();
                     System.out.println("Card " + (i + 1) + " selected");                    
                     // 카드 효과 적용 로직 추가
                     break;

@@ -20,9 +20,6 @@ public class Player extends Entity {
 	private long lastShotTime; // 쿨타임 계산용 시간
 	private long shotCooldown = 500; // 0.5초 쿨타임 설정
 	
-	// 5월18일 11:59 추가
-	//public int mouseCursorX, mouseCursorY; // 마우스커서 x,y 추적좌표 변수
-	
 
 	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
@@ -128,8 +125,8 @@ public class Player extends Entity {
 			if (movingHorizontally && movingVertically) {
 	            // 속도를 조정하여 대각선 이동 시 과도한 속도 증가 방지
 	            adjustedSpeed = speed / Math.sqrt(2);
-	        }
-
+	        }			
+			
 			// 위로 이동
 			if (keyH.upPressed) {
 				y -= adjustedSpeed;

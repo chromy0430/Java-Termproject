@@ -8,7 +8,7 @@ public class Monster extends Entity
 	GamePanel gp;
 	Player pl;
 	// 추적속도
-	double Tspeed = 3.5;
+	int Tspeed = 3;
 	
 	public Monster(GamePanel gp, Player pl, int x, int y)
 	{
@@ -31,6 +31,12 @@ public class Monster extends Entity
 	    if (magnitude != 0) {
 	        distanceX /= magnitude;
 	        distanceY /= magnitude;
+	    }
+	    
+	    double adjustedSpeed = Tspeed;
+	    if (Math.abs(distanceX) > 0 && Math.abs(distanceY) > 0) {
+	        // 대각선 이동 시 속도 조정
+	        adjustedSpeed = Tspeed / Math.sqrt(2);
 	    }
 
 	    // 몬스터의 위치 업데이트 (이동 속도는 2로 가정)
