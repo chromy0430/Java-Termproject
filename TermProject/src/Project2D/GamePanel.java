@@ -7,8 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements Runnable 
 {
@@ -24,8 +27,12 @@ public class GamePanel extends JPanel implements Runnable
 	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 17일 22:07 추가
 	MouseMotionHandler mouseMotionH = new MouseMotionHandler(); // 18일 12:15 추가
 	
-	ArrayList<Monster> monsters = new ArrayList<>();	
-	
+	// 5월18일 오후 추가
+	ArrayList<Monster> monsters = new ArrayList<>(); 
+	long GameStartTime; //레벨업 타이머 추가
+	boolean showLevelUp = false; // 레벨업 논리형 추가
+	boolean gamePaused = false;
+		
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
 	Thread gameThread; // 게임 쓰레드
 	
@@ -52,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable
 		this.addMouseListener(mouseH);
 		this.addMouseMotionListener(mouseMotionH);		
 		
-		// 생성자 내부에서 몬스터 초기화
+		// 생성자 내부에서 몬스터 초기화(18일 오후 추가)
 		for (int i = 0; i < MobCount; i++) {
 		    int randomX = (int) (Math.random() * (screenWidth - tileSize));
 		    int randomY = (int) (Math.random() * (screenHeight - tileSize));
@@ -62,6 +69,7 @@ public class GamePanel extends JPanel implements Runnable
 	
 	public void startGameThread() {
 		gameThread = new Thread(this); // 새 쓰레드 생성
+		GameStartTime = System.currentTimeMillis(); // 18일 오후 추가
 		gameThread.start(); // 쓰레드 시작
 	}
 
@@ -81,7 +89,10 @@ public class GamePanel extends JPanel implements Runnable
 			lastTime = currentTime; // 시간 갱신
 
 			if (delta >= 1) { // 프레임 갱신 간격되면
-				update(); // 초당 60프레임 만큼 업데이트
+				if(!gamePaused)
+				{
+					update();
+				}
 				repaint(); // 업데이트되는 만큼 이미지 재생성
 				delta--; // 누적된 간격 감소
 				drawCount++; // 프레임 수 증가
@@ -97,21 +108,26 @@ public class GamePanel extends JPanel implements Runnable
 		}
 	}
 
-	public void update() {
-		
+	public void update() 
+	{
 		player.update();
-		
+        
+        // 18일 오후 추가
 		for (Monster monster : monsters)
 		{
 			monster.update();
-		}
+		} 
+		if (!showLevelUp && (System.currentTimeMillis() - GameStartTime) >= 10000) 
+		{
+	       showLevelUp = true;
+	       gamePaused = true;	
+	       GameStartTime = 0;
+	    }		
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		Graphics2D g2 = (Graphics2D) g;
-
 		player.draw(g2);
 		
 		// 조준점 그리기 5월 18일 추가
@@ -121,12 +137,64 @@ public class GamePanel extends JPanel implements Runnable
         int crosshairY = mouseMotionH.mouseY - crosshairSize / 2;
         g2.drawOval(crosshairX, crosshairY, crosshairSize, crosshairSize);
 		
+        // 18일 오후 추가
         for (Monster monster : monsters) {
             monster.draw(g2);
         }
         
+        if (showLevelUp) {
+            drawLevelUpCards(g2);
+        }
+        
 		g2.dispose();
 	}
-
 	
+	// 카드 창 표시 기능 (18일 오후 추가)
+    private void drawLevelUpCards(Graphics2D g2) {
+        int cardWidth = 200;
+        int cardHeight = 300;
+        int gap = 50;
+        int startX = (screenWidth - (cardWidth * 3 + gap * 2)) / 2;
+        int startY = (screenHeight - cardHeight) / 2;
+
+        for (int i = 0; i < 3; i++) {
+            int x = startX + i * (cardWidth + gap);
+            g2.setColor(Color.white);
+            g2.fillRect(x, startY, cardWidth, cardHeight);
+            g2.setColor(Color.black);
+            g2.drawRect(x, startY, cardWidth, cardHeight);
+            g2.drawString("Card " + (i + 1), x + cardWidth / 2 - 20, startY + cardHeight / 2);
+        }
+    }   
+    // 카드 체크기능
+    private void checkCardClick() {
+        if (showLevelUp && mouseH.mousePressed) {
+            int cardWidth = 200;
+            int cardHeight = 300;
+            int gap = 50;
+            int startX = (screenWidth - (cardWidth * 3 + gap * 2)) / 2;
+            int startY = (screenHeight - cardHeight) / 2;
+
+            for (int i = 0; i < 3; i++) {
+                int x = startX + i * (cardWidth + gap);
+                if (mouseH.mouseX >= x && mouseH.mouseX <= x + cardWidth && mouseH.mouseY >= startY && mouseH.mouseY <= startY + cardHeight) {
+                	showLevelUp = false;
+                    gamePaused = false; // 게임 재개
+                    mouseH.mousePressed = false; // 마우스 클릭 상태 초기화
+                    
+                    System.out.println("Card " + (i + 1) + " selected");                    
+                    // 카드 효과 적용 로직 추가
+                    break;
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        paintComponent(g);
+        checkCardClick();
+    }
+
 }

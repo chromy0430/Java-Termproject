@@ -8,7 +8,7 @@ public class Monster extends Entity
 	GamePanel gp;
 	Player pl;
 	// 추적속도
-	int Tspeed = 4;
+	double Tspeed = 3.5;
 	
 	public Monster(GamePanel gp, Player pl, int x, int y)
 	{
@@ -42,5 +42,6 @@ public class Monster extends Entity
 	{
 		g2.setColor(Color.RED);
 		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
+		
 	}
 }
