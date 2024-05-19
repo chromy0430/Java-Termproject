@@ -5,11 +5,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -23,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable
 	final int maxScreenRow = 18; // 화면에 표시될 최대 세로 수
 	final int screenWidth = 1280;//tileSize * maxScreenCol; // 화면 너비 768픽셀
 	final int screenHeight = 720;//tileSize * maxScreenRow; // 화면 높이 576픽셀
-	
+		
 	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 17일 22:07 추가
 	MouseMotionHandler mouseMotionH = new MouseMotionHandler(); // 18일 12:15 추가
 	
@@ -33,11 +36,15 @@ public class GamePanel extends JPanel implements Runnable
 	boolean showLevelUp = false; // 레벨업 논리형 추가
 	boolean gamePaused = false;
 	long lastLevelUpTime;
+	
+	// 19일 16시 추가
+	ArrayList<Projectile> projectiles = new ArrayList<>();
+	CardEffect Effect = new CardEffect();
 		
 	KeyHandler keyH = new KeyHandler(); // KeyHandler 객체
 	Thread gameThread; // 게임 쓰레드
 	
-	Player player = new Player(this, keyH, mouseH); // 마우스 클릭 매개변수 추가
+	public Player player = new Player(this, keyH, mouseH); // 마우스 클릭 매개변수 추가
 	
 	// FPS 설정
 	int FPS = 60; // 초당 프레임
@@ -49,6 +56,10 @@ public class GamePanel extends JPanel implements Runnable
 	
 	//몬스터 기본 값초기화
 	int MobCount = 5;
+	
+	// 이미지 변수 선언
+    BufferedImage cardImage1, cardImage2, cardImage3; // 19일 오후 추가
+    private BufferedImage A1, A2, A3, A4;
 
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // 패널 크기 설정
@@ -59,6 +70,15 @@ public class GamePanel extends JPanel implements Runnable
 		this.addKeyListener(keyH); // 키 리스너 추가
 		this.addMouseListener(mouseH);
 		this.addMouseMotionListener(mouseMotionH);		
+		
+		// 이미지 로드 19일 오후 추가
+        try {
+            A1 = cardImage1 = ImageIO.read(getClass().getResourceAsStream("/card/Card1.png"));
+            A2 = cardImage2 = ImageIO.read(getClass().getResourceAsStream("/card/Card2.png"));
+            A3 = cardImage3 = ImageIO.read(getClass().getResourceAsStream("/card/Card3.png"));            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }	   
 		
 		// 생성자 내부에서 몬스터 초기화(18일 오후 추가)
 		for (int i = 0; i < MobCount; i++) {
@@ -71,7 +91,6 @@ public class GamePanel extends JPanel implements Runnable
 	public void startGameThread() {
 		gameThread = new Thread(this); // 새 쓰레드 생성
 		GameStartTime = System.currentTimeMillis(); // 18일 오후 추가
-		//lastLevelUpTime = System.currentTimeMillis(); // 18일 오후 추가
 		gameThread.start(); // 쓰레드 시작
 	}
 
@@ -85,7 +104,6 @@ public class GamePanel extends JPanel implements Runnable
 
 		while (gameThread != null) { // 쓰레드가 실행 중
 			currentTime = System.nanoTime(); // 현재 시간 기록
-
 			delta += (currentTime - lastTime) / drawInterval; // 시간 간격 누적
 			timer += (currentTime - lastTime); // 타이머 누적
 			lastTime = currentTime; // 시간 갱신
@@ -115,20 +133,28 @@ public class GamePanel extends JPanel implements Runnable
 		player.update();
         
         // 18일 오후 추가
-		for (Monster monster : monsters)
-		{
-			monster.update();
-		} 
+//		for (Monster monster : monsters)
+//		{
+//			monster.update();
+//		}
+		// 19일 16시 추가
+
+
+            for (Monster monster : monsters) {
+                monster.update();
+            }
+            for (Projectile projectile : projectiles) {
+                projectile.update();
+            }
+            
+
+		
 		if (!showLevelUp && (System.currentTimeMillis() - GameStartTime) >= 10000) 
 		{
 	       showLevelUp = true;
 	       gamePaused = true;	
 
 	    }
-//		if (!showLevelUp && System.currentTimeMillis() - lastLevelUpTime >= 10000) {
-//	        showLevelUp = true;
-//	        gamePaused = true;
-//	    }
 	}
 
 	public void paintComponent(Graphics g) {
@@ -139,8 +165,8 @@ public class GamePanel extends JPanel implements Runnable
 		// 조준점 그리기 5월 18일 추가
 		g2.setColor(Color.white);
         int crosshairSize = 10;
-        int crosshairX = mouseMotionH.mouseX - crosshairSize / 2;
-        int crosshairY = mouseMotionH.mouseY - crosshairSize / 2;
+        int crosshairX = (int)mouseMotionH.mouseX - crosshairSize / 2;
+        int crosshairY = (int)mouseMotionH.mouseY - crosshairSize / 2;
         g2.drawOval(crosshairX, crosshairY, crosshairSize, crosshairSize);
 		
         // 18일 오후 추가
@@ -162,14 +188,22 @@ public class GamePanel extends JPanel implements Runnable
         int gap = 50;
         int startX = (screenWidth - (cardWidth * 3 + gap * 2)) / 2;
         int startY = (screenHeight - cardHeight) / 2;
-
+        
+        BufferedImage[] cardImages = {cardImage1, cardImage2, cardImage3};
+        
         for (int i = 0; i < 3; i++) {
             int x = startX + i * (cardWidth + gap);
             g2.setColor(Color.white);
             g2.fillRect(x, startY, cardWidth, cardHeight);
             g2.setColor(Color.black);
             g2.drawRect(x, startY, cardWidth, cardHeight);
-            g2.drawString("Card " + (i + 1), x + cardWidth / 2 - 20, startY + cardHeight / 2);
+            //g2.drawString("Card " + (i + 1), x + cardWidth / 2 - 20, startY + cardHeight / 2);
+            // 이미지 그리기 19일 오후 추가
+            if (cardImages[i] != null) {
+                g2.drawImage(cardImages[i], x, startY, cardWidth, cardHeight, null);
+            } else {
+                g2.drawString("카드 이미지 불러오기 실패", x + cardWidth / 2 - 20, startY + cardHeight / 2);
+            }
         }
     }   
     // 카드 체크기능
@@ -191,6 +225,27 @@ public class GamePanel extends JPanel implements Runnable
                     //lastLevelUpTime = System.currentTimeMillis();
                     System.out.println("Card " + (i + 1) + " selected");                    
                     // 카드 효과 적용 로직 추가
+                    //break;
+                    // 카드 효과 적용 19일 오후 추가
+                    switch (CardEffect.cardEffect.values()[i]) {
+                        case A1:
+                            playerSpeed += 5;
+                            System.out.println("현재 속도는 " + playerSpeed);
+                            break;
+                        case A2:
+                            playerSpeed -= 10;
+                            System.out.println("현재 속도는 " + playerSpeed);
+                            break;
+                        case A3:
+                            playerSpeed = 20;
+                            System.out.println("현재 속도는 " + playerSpeed);
+                            break;
+                        default:
+                            // 예외 처리
+                        	System.out.println("현재 속도는 " + playerSpeed);
+                            break;
+                    }
+
                     break;
                 }
             }

@@ -5,7 +5,7 @@ import java.awt.event.MouseMotionListener;
 
 public class MouseMotionHandler implements MouseMotionListener
 {
-	public int mouseX, mouseY;
+	public float mouseX, mouseY;
 	
 	@Override
 	public void mouseDragged(MouseEvent e) 
@@ -18,6 +18,6 @@ public class MouseMotionHandler implements MouseMotionListener
 	public void mouseMoved(MouseEvent e) 
 	{
 		mouseX = e.getX();
-		mouseY = e.getY();
+		mouseY = e.getY();		
 	}
 }

@@ -14,12 +14,14 @@ public class Player extends Entity {
 	GamePanel gp;
 	KeyHandler keyH;
 
+	// 19일 16시 추가
+	public int exp = 0; // 경험치 변수 추가
+	
 	// 22:07 추가
 	MouseHandler mouseH; // 마우스로부터 입력 받는 클래스 초기화 22:07 추가
 	ArrayList<Projectile> projectiles; // 투사체 관리
 	private long lastShotTime; // 쿨타임 계산용 시간
 	private long shotCooldown = 500; // 0.5초 쿨타임 설정
-	
 
 	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
@@ -165,8 +167,8 @@ public class Player extends Entity {
 		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {	
 			
 			// 마우스 커서 위치쪽을 향해 투사체 발사
-			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
-			
+			//projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
+			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));
 			//projectiles.add(new Projectile(x, y)); // 원본
 			
 			lastShotTime = currentTime; // 마지막 발사 시간 갱신
@@ -180,6 +182,7 @@ public class Player extends Entity {
 		
 		// 화면 밖으로 나간 투사체 제거 (단순히 화면 위로 나간 경우만 체크)
         projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth);
+        
     
 	}
 
