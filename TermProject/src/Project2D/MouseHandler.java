@@ -3,24 +3,19 @@ package Project2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class MouseHandler extends MouseAdapter 
-{
+public class MouseHandler extends MouseAdapter {
 	public boolean mousePressed;
 	public double mouseX, mouseY;
-	
+
 	@Override
-	public void mousePressed(MouseEvent e) 
-	{
+	public void mousePressed(MouseEvent e) {
 		mousePressed = true;
 		mouseX = e.getX();
-		mouseY = e.getY();		
+		mouseY = e.getY();
 	}
-	
-	
-	
+
 	@Override
-	public void mouseReleased(MouseEvent e) 
-	{
+	public void mouseReleased(MouseEvent e) {
 		mousePressed = false;
 	}
 }

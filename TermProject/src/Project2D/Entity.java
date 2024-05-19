@@ -5,6 +5,7 @@ import java.awt.image.*;
 public class Entity 
 {
 	public int x, y;
+	public int worldX, worldY;
 	public int speed;
 	
 	public BufferedImage up1, up2, up3, up4, up5, up6, up7;

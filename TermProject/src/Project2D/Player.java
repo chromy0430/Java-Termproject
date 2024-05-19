@@ -13,20 +13,27 @@ public class Player extends Entity {
 
 	GamePanel gp;
 	KeyHandler keyH;
-
-	// 19일 16시 추가
-	public int exp = 0; // 경험치 변수 추가
 	
+	public final int screenX;
+	public final int screenY;
+	
+	// 19일 16시 추가
+		public int exp = 0; // 경험치 변수 추가
+
 	// 22:07 추가
 	MouseHandler mouseH; // 마우스로부터 입력 받는 클래스 초기화 22:07 추가
 	ArrayList<Projectile> projectiles; // 투사체 관리
 	private long lastShotTime; // 쿨타임 계산용 시간
 	private long shotCooldown = 500; // 0.5초 쿨타임 설정
+	
 
 	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
 		this.gp = gp;
 		this.keyH = keyH;
+		
+		screenX = gp.screenWidth/2 - (gp.tileSize/2);
+		screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
 		// 22:07 추가
 		this.mouseH = mouseH;
@@ -38,8 +45,10 @@ public class Player extends Entity {
 
 	public void setDefaultValues() {
 
-		x = 100;
-		y = 100;
+//		x = 100;
+//		y = 100;
+		worldX = gp.tileSize * 23;
+		worldY = gp.tileSize * 21;
 		speed = 4;
 		direction = "down";
 
@@ -131,19 +140,23 @@ public class Player extends Entity {
 			
 			// 위로 이동
 			if (keyH.upPressed) {
-				y -= adjustedSpeed;
+//				y -= adjustedSpeed;
+				worldY -= adjustedSpeed;
 			}
 			// 아래로 이동
 			if (keyH.downPressed) {
-				y += adjustedSpeed;
+//				y += adjustedSpeed;
+				worldY += adjustedSpeed;
 			}
 			// 왼쪽으로 이동
 			if (keyH.leftPressed) {
-				x -= adjustedSpeed;
+//				x -= adjustedSpeed;
+				worldX -= adjustedSpeed;
 			}
 			// 오른쪽으로 이동
 			if (keyH.rightPressed) {
-				x += adjustedSpeed;
+//				x += adjustedSpeed;
+				worldX += adjustedSpeed;
 			}
 
 			// 스프라이트 카운터 증가
@@ -167,8 +180,8 @@ public class Player extends Entity {
 		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {	
 			
 			// 마우스 커서 위치쪽을 향해 투사체 발사
-			//projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
-			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));
+			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
+			
 			//projectiles.add(new Projectile(x, y)); // 원본
 			
 			lastShotTime = currentTime; // 마지막 발사 시간 갱신
@@ -182,7 +195,6 @@ public class Player extends Entity {
 		
 		// 화면 밖으로 나간 투사체 제거 (단순히 화면 위로 나간 경우만 체크)
         projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth);
-        
     
 	}
 
@@ -284,7 +296,7 @@ public class Player extends Entity {
 			}
 			break;
 		}
-		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
 		// 투사체 그리기
 		for (Projectile projectile : projectiles) {
