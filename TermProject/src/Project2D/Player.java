@@ -180,7 +180,7 @@ public class Player extends Entity {
 		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {	
 			
 			// 마우스 커서 위치쪽을 향해 투사체 발사
-			projectiles.add(new Projectile(x, y, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
+			projectiles.add(new Projectile(screenX + 20, screenY + 20, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
 			
 			//projectiles.add(new Projectile(x, y)); // 원본
 			
@@ -194,7 +194,7 @@ public class Player extends Entity {
 		//projectiles.removeIf(p -> p.y < 0); // 원본 화면밖으로 투사체가 나갈 시 자동으로 삭제
 		
 		// 화면 밖으로 나간 투사체 제거 (단순히 화면 위로 나간 경우만 체크)
-        projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth);
+        projectiles.removeIf(p -> p.y < 0 || p.y > gp.worldHeight || p.x < 0 || p.x > gp.worldWidth);
     
 	}
 
