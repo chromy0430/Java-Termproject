@@ -18,6 +18,6 @@ public class MouseMotionHandler implements MouseMotionListener
 	public void mouseMoved(MouseEvent e) 
 	{
 		mouseX = e.getX();
-		mouseY = e.getY();		
+		mouseY = e.getY();
 	}
 }

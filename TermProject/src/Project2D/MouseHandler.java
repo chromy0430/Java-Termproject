@@ -17,7 +17,6 @@ public class MouseHandler extends MouseAdapter
 	}
 	
 	
-	
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
