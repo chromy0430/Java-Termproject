@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -11,31 +12,41 @@ import java.awt.image.*;
 
 public class Player extends Entity {
 
+	// 이미지 스프라이트 05/22 18:30
+	BufferedImage[] upFrames; // 위로 이동 이미지 배열
+	BufferedImage[] downFrames; // 아래로 이동 이미지 배열
+	BufferedImage[] leftFrames; // 왼쪽으로 이동 이미지 배열
+	BufferedImage[] rightFrames; // 오른쪽으로 이동 이미지 배열
+	BufferedImage idleFrame; // 멈췄을 때 기본 이미지
+	int currentFrame = 0; // 현재 프레임
+	int frameCount = 7; // 총 프레임 수
+	int frameDelay = 10; // 프레임 간격 (애니메이션 속도 조절)
+	int frameCounter = 0; // 프레임 카운터
+
 	GamePanel gp;
 	KeyHandler keyH;
-	
+
 //	public final int screenX; //05/22 1:45 수정
 //	public final int screenY; //05/22 1:45 수정
-	
-	// 5월 22일 수정 
-	public int x; //05/22 1:45 수정
-	public int y; //05/22 1:45 수정
-	
+
+	// 5월 22일 수정
+	public int x; // 05/22 1:45 수정
+	public int y; // 05/22 1:45 수정
+
 	// 19일 16시 추가
-		public int exp = 0; // 경험치 변수 추가
+	public int exp = 0; // 경험치 변수 추가
 
 	// 22:07 추가
 	MouseHandler mouseH; // 마우스로부터 입력 받는 클래스 초기화 22:07 추가
 	ArrayList<Projectile> projectiles; // 투사체 관리
 	private long lastShotTime; // 쿨타임 계산용 시간
 	private long shotCooldown = 500; // 0.5초 쿨타임 설정
-	
 
 	public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
 
 		this.gp = gp;
 		this.keyH = keyH;
-		
+
 //		screenX = gp.screenWidth/2 - (gp.tileSize/2);
 //		screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
@@ -49,8 +60,8 @@ public class Player extends Entity {
 
 	public void setDefaultValues() {
 
-		x = gp.tileSize * 20; //05/22 1:45 수정
-		y = gp.tileSize * 11; //05/22 1:45 수정
+		x = gp.tileSize * 20; // 05/22 1:45 수정
+		y = gp.tileSize * 11; // 05/22 1:45 수정
 //		worldX = gp.tileSize * 23; //05/22 1:45 수정
 //		worldY = gp.tileSize * 21; //05/22 1:45 수정
 		speed = 2;
@@ -61,56 +72,46 @@ public class Player extends Entity {
 
 	public void getPlayerImage() {
 		try {
+			// 위로 이동 이미지 로드 05/22 18:30
+			upFrames = new BufferedImage[7];
+			for (int i = 0; i < 7; i++) {
+				upFrames[i] = ImageIO.read(getClass().getResourceAsStream("/player/w" + (i + 1) + ".png"));
+			}
 
-			// 위로 걷기 사진
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/w1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/w2.png"));
-			up3 = ImageIO.read(getClass().getResourceAsStream("/player/w3.png"));
-			up4 = ImageIO.read(getClass().getResourceAsStream("/player/w4.png"));
-			up5 = ImageIO.read(getClass().getResourceAsStream("/player/w5.png"));
-			up6 = ImageIO.read(getClass().getResourceAsStream("/player/w6.png"));
-			up7 = ImageIO.read(getClass().getResourceAsStream("/player/w7.png"));
+			// 아래로 이동 이미지 로드 05/22 18:30
+			downFrames = new BufferedImage[7];
+			for (int i = 0; i < 7; i++) {
+				downFrames[i] = ImageIO.read(getClass().getResourceAsStream("/player/s" + (i + 1) + ".png"));
+			}
 
-			// 왼쪽으로 걷기 사진
-			left1 = ImageIO.read(getClass().getResourceAsStream("/player/a1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/player/a2.png"));
-			left3 = ImageIO.read(getClass().getResourceAsStream("/player/a3.png"));
-			left4 = ImageIO.read(getClass().getResourceAsStream("/player/a4.png"));
-			left5 = ImageIO.read(getClass().getResourceAsStream("/player/a5.png"));
-			left6 = ImageIO.read(getClass().getResourceAsStream("/player/a6.png"));
-			left7 = ImageIO.read(getClass().getResourceAsStream("/player/a7.png"));
+			// 왼쪽으로 이동 이미지 로드 05/22 18:30
+			leftFrames = new BufferedImage[7];
+			for (int i = 0; i < 7; i++) {
+			
+				leftFrames[i] = ImageIO.read(getClass().getResourceAsStream("/player/a" + (i + 1) + ".png"));
+			}
 
-			// 아래로 걷기 사진
-			down1 = ImageIO.read(getClass().getResourceAsStream("/player/s1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/player/s2.png"));
-			down3 = ImageIO.read(getClass().getResourceAsStream("/player/s3.png"));
-			down4 = ImageIO.read(getClass().getResourceAsStream("/player/s4.png"));
-			down5 = ImageIO.read(getClass().getResourceAsStream("/player/s5.png"));
-			down6 = ImageIO.read(getClass().getResourceAsStream("/player/s6.png"));
-			down7 = ImageIO.read(getClass().getResourceAsStream("/player/s7.png"));
+			// 오른쪽으로 이동 이미지 로드 05/22 18:30
+			rightFrames = new BufferedImage[7];
+			for (int i = 0; i < 7; i++) {
+				rightFrames[i] = ImageIO.read(getClass().getResourceAsStream("/player/d" + (i + 1) + ".png"));
+			}
 
-			// 오른쪽으로 걷기 사진
-			right1 = ImageIO.read(getClass().getResourceAsStream("/player/d1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/player/d2.png"));
-			right3 = ImageIO.read(getClass().getResourceAsStream("/player/d3.png"));
-			right4 = ImageIO.read(getClass().getResourceAsStream("/player/d4.png"));
-			right5 = ImageIO.read(getClass().getResourceAsStream("/player/d5.png"));
-			right6 = ImageIO.read(getClass().getResourceAsStream("/player/d6.png"));
-			right7 = ImageIO.read(getClass().getResourceAsStream("/player/d7.png"));
-
+			// 멈췄을 때 기본 이미지 로드 05/22 18:30
+			idleFrame = ImageIO.read(getClass().getResourceAsStream("/player/s1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void update() {		
-		
-		// 수평 이동 여부를 확인하기 위한 플래그
-	    boolean movingHorizontally = false;
-	    // 수직 이동 여부를 확인하기 위한 플래그
-	    boolean movingVertically = false;
+	public void update() {
 
-		// 플레이어가 어느 방향이든 이동 중인 경우
+		// 수평 이동 여부를 확인하기 위한 플래그
+		boolean movingHorizontally = false;
+		// 수직 이동 여부를 확인하기 위한 플래그
+		boolean movingVertically = false;
+
+		// 플레이어가 어느 방향이든 이동 중인 경우 
 		if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
 				|| keyH.rightPressed == true) {
 			// 위로 이동 중인 경우
@@ -121,7 +122,7 @@ public class Player extends Entity {
 			// 아래로 이동 중인 경우
 			if (keyH.downPressed == true) {
 				direction = "down";
-				 movingVertically = true;
+				movingVertically = true;
 			}
 			// 왼쪽으로 이동 중인 경우
 			if (keyH.leftPressed == true) {
@@ -138,32 +139,32 @@ public class Player extends Entity {
 			double adjustedSpeed = speed;
 			// 수평 및 수직으로 동시에 이동 중인 경우 (대각선 이동)
 			if (movingHorizontally && movingVertically) {
-	            // 속도를 조정하여 대각선 이동 시 과도한 속도 증가 방지
-	            adjustedSpeed = speed / Math.sqrt(2);
-	        }			
-			
+				// 속도를 조정하여 대각선 이동 시 과도한 속도 증가 방지
+				adjustedSpeed = speed / Math.sqrt(2);
+			}
+
 			// 위로 이동
 			if (keyH.upPressed) {
-				y -= adjustedSpeed; //05/22 1:45 수정
+				y -= adjustedSpeed; // 05/22 1:45 수정
 //				worldY -= adjustedSpeed;
 			}
 			// 아래로 이동
 			if (keyH.downPressed) {
-				y += adjustedSpeed; //05/22 1:45 수정
+				y += adjustedSpeed; // 05/22 1:45 수정
 //				worldY += adjustedSpeed;
 			}
 			// 왼쪽으로 이동
 			if (keyH.leftPressed) {
-				x -= adjustedSpeed; //05/22 1:45 수정
+				x -= adjustedSpeed; // 05/22 1:45 수정
 //				worldX -= adjustedSpeed;
 			}
 			// 오른쪽으로 이동
 			if (keyH.rightPressed) {
-				x += adjustedSpeed; //05/22 1:45 수정
+				x += adjustedSpeed; // 05/22 1:45 수정
 //				worldX += adjustedSpeed;
 			}
 
-			// 스프라이트 카운터 증가
+			// 스프라이트 카운터 증가 
 			spriteCounter++;
 			// 스프라이트 카운터가 일정 수를 초과하면
 			if (spriteCounter > 10) {
@@ -177,17 +178,25 @@ public class Player extends Entity {
 				spriteCounter = 0;
 			}
 		} else {
-			spriteNum = 1;
+			spriteNum = 0;
+		}
+
+		// 프레임 카운터를 증가시킵니다.05/22 18:30
+		frameCounter++; 
+		// 지정된 프레임 간격마다 현재 프레임을 업데이트합니다. 05/22 18:30
+		if (frameCounter >= frameDelay) {
+			frameCounter = 0; // 프레임 카운터 초기화
+			currentFrame = (currentFrame + 1) % frameCount; // 다음 프레임으로 이동
 		}
 
 		long currentTime = System.currentTimeMillis(); // 현재 시간
-		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {	
-			
+		if (mouseH.mousePressed && currentTime - lastShotTime >= shotCooldown) {
+
 			// 마우스 커서 위치쪽을 향해 투사체 발사
-			projectiles.add(new Projectile(x + 20, y + 20, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));         
-			
+			projectiles.add(new Projectile(x + 20, y + 20, gp.mouseMotionH.mouseX, gp.mouseMotionH.mouseY));
+
 //			projectiles.add(new Projectile(x, y )); // 원본
-			
+
 			lastShotTime = currentTime; // 마지막 발사 시간 갱신
 		}
 
@@ -195,112 +204,37 @@ public class Player extends Entity {
 			projectile.update();
 		}
 
-		//projectiles.removeIf(p -> p.y < 0); // 원본 화면밖으로 투사체가 나갈 시 자동으로 삭제
-		
+		// projectiles.removeIf(p -> p.y < 0); // 원본 화면밖으로 투사체가 나갈 시 자동으로 삭제
+
 		// 화면 밖으로 나간 투사체 제거 (단순히 화면 위로 나간 경우만 체크)
-        projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth); //05/22 1:45 수정
-    
+		projectiles.removeIf(p -> p.y < 0 || p.y > gp.screenHeight || p.x < 0 || p.x > gp.screenWidth); // 05/22 1:45 수정
+
 	}
 
 	public void draw(Graphics2D g2) {
 
-		BufferedImage image = null;
+		BufferedImage playerImage = null;
 
-		switch (direction) {
-		case "up":
-			if (spriteNum == 1) {
-				image = up1;
-			}
-			if (spriteNum == 2) {
-				image = up2;
-			}
-			if (spriteNum == 3) {
-				image = up3;
-			}
-			if (spriteNum == 4) {
-				image = up4;
-			}
-			if (spriteNum == 5) {
-				image = up5;
-			}
-			if (spriteNum == 6) {
-				image = up6;
-			}
-			if (spriteNum == 7) {
-				image = up7;
-			}
-			break;
-		case "down":
-			if (spriteNum == 1) {
-				image = down1;
-			}
-			if (spriteNum == 2) {
-				image = down2;
-			}
-			if (spriteNum == 3) {
-				image = down3;
-			}
-			if (spriteNum == 4) {
-				image = down4;
-			}
-			if (spriteNum == 5) {
-				image = down5;
-			}
-			if (spriteNum == 6) {
-				image = down6;
-			}
-			if (spriteNum == 7) {
-				image = down7;
-			}
-			break;
-		case "left":
-			if (spriteNum == 1) {
-				image = left1;
-			}
-			if (spriteNum == 2) {
-				image = left2;
-			}
-			if (spriteNum == 3) {
-				image = left3;
-			}
-			if (spriteNum == 4) {
-				image = left4;
-			}
-			if (spriteNum == 5) {
-				image = left5;
-			}
-			if (spriteNum == 6) {
-				image = left6;
-			}
-			if (spriteNum == 7) {
-				image = left7;
-			}
-			break;
-		case "right":
-			if (spriteNum == 1) {
-				image = right1;
-			}
-			if (spriteNum == 2) {
-				image = right2;
-			}
-			if (spriteNum == 3) {
-				image = right3;
-			}
-			if (spriteNum == 4) {
-				image = right4;
-			}
-			if (spriteNum == 5) {
-				image = right5;
-			}
-			if (spriteNum == 6) {
-				image = right6;
-			}
-			if (spriteNum == 7) {
-				image = right7;
-			}
-			break;
-		}
-		g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null); //05/22 1:45 수정
+	    if (spriteNum == 0) { // 멈췄을 때 기본 이미지 사용 05/22 18:30
+	        playerImage = idleFrame;
+	    } else { // 이동 중일 때 애니메이션 프레임 사용 05/22 18:30
+	        switch (direction) {
+	            case "up":
+	                playerImage = upFrames[currentFrame];
+	                break;
+	            case "down":
+	                playerImage = downFrames[currentFrame];
+	                break;
+	            case "left":
+	                playerImage = leftFrames[currentFrame];
+	                break;
+	            case "right":
+	                playerImage = rightFrames[currentFrame];
+	                break;
+	        }
+	    }
+
+		g2.drawImage(playerImage, x, y, gp.tileSize, gp.tileSize, null); // 05/22 1:45 수정
 
 		// 투사체 그리기
 		for (Projectile projectile : projectiles) {
