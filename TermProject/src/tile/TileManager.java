@@ -21,7 +21,7 @@ public class TileManager {
 		this.gp = gp; // GamePanel 객체를 초기화
 		
 		tile = new Tile[10]; // 10개의 타일 객체 배열을 초기화
-		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow]; // 맵 타일 번호 배열을 초기화
+		mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow]; // 맵 타일 번호 배열을 초기화
 		
 		getTileImage(); // 타일 이미지를 로드하는 메소드 호출
 		loadMap("/maps/world01.txt"); // 맵 데이터를 로드하는 메소드 호출
@@ -64,11 +64,11 @@ public class TileManager {
 			int col = 0; // 열을 나타내는 변수 초기화
 			int row = 0; // 행을 나타내는 변수 초기화
 			
-			while (col < gp.maxWorldCol && row < gp.maxWorldRow) { // 모든 행과 열을 순회
+			while (col < gp.maxScreenCol && row < gp.maxScreenRow) { // 모든 행과 열을 순회
 				
 				String line = br.readLine(); // 한 줄 읽음
 				
-				while(col < gp.maxWorldCol) { // 한 행의 모든 열을 순회
+				while(col < gp.maxScreenCol) { // 한 행의 모든 열을 순회
 					
 					String numbers[] = line.split(" "); // 공백으로 분리하여 숫자 배열로 변환
 					
@@ -77,7 +77,7 @@ public class TileManager {
 					mapTileNum[col][row] = num; // 맵 타일 번호 배열에 저장
 					col++;
 				}
-				if(col == gp.maxWorldCol) { // 열이 최대 열 수에 도달하면
+				if(col == gp.maxScreenCol) { // 열이 최대 열 수에 도달하면
 					col = 0; // 열을 0으로 초기화
 					row++; // 행을 1 증가
 				}
@@ -91,24 +91,32 @@ public class TileManager {
 	
 	public void draw(Graphics2D g2) {
 		
-		int worldCol = 0; // 월드 열 초기화
-		int worldRow = 0; // 월드 행 초기화
+		int col = 0;
+		int row = 0;
+		int x = 0;
+		int y = 0;
 		
-		while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) { // 모든 행과 열을 순회
+//		int worldCol = 0; // 월드 열 초기화
+//		int worldRow = 0; // 월드 행 초기화
+		
+		while(col < gp.maxScreenCol && row < gp.maxScreenRow) { // 모든 행과 열을 순회
 			
-			int tileNum = mapTileNum[worldCol][worldRow]; // 현재 위치의 타일 번호를 가져옴
+			int tileNum = mapTileNum[col][row]; // 현재 위치의 타일 번호를 가져옴
 			
-			int worldX = worldCol * gp.tileSize; // 월드 X 좌표 계산
-			int worldY = worldRow * gp.tileSize; // 월드 Y 좌표 계산
-			int screenX = worldX - gp.player.worldX + gp.player.screenX; // 스크린 X 좌표 계산
-			int screenY = worldY - gp.player.worldY + gp.player.screenY; // 스크린 Y 좌표 계산
+//			int worldX = worldCol * gp.tileSize; // 월드 X 좌표 계산
+//			int worldY = worldRow * gp.tileSize; // 월드 Y 좌표 계산
+//			int screenX = worldX - gp.player.x + gp.player.screenX; // 스크린 X 좌표 계산
+//			int screenY = worldY - gp.player.y + gp.player.screenY; // 스크린 Y 좌표 계산
 			
-			g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null); // 타일 이미지를 그리기
-			worldCol++; // 열을 1 증가
+			g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null); // 타일 이미지를 그리기
+			col++; // 열을 1 증가
+			x += gp.tileSize;
 			
-			if(worldCol == gp.maxWorldCol) { // 열이 최대 열 수에 도달하면
-				worldCol = 0; // 열을 0으로 초기화
-				worldRow++; // 행을 1 증가
+			if(col == gp.maxScreenCol) { // 열이 최대 열 수에 도달하면
+				col = 0; // 열을 0으로 초기화
+				x = 0;
+				row++;
+				y += gp.tileSize;
 			}
 			
 		}

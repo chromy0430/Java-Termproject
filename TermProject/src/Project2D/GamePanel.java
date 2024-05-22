@@ -23,19 +23,19 @@ public class GamePanel extends JPanel implements Runnable {
 	final int scale = 3; // 타일 크기 배율
 
 	public final int tileSize = originalTileSize * scale; // 48*48 타일 크기
-	public final int maxScreenCol = 16; // 화면에 표시될 최대 가로 수
-	public final int maxScreenRow = 12; // 화면에 표시될 최대 세로 수
-	public final int screenWidth = tileSize * maxScreenCol; // 화면 너비 768픽셀
-	public final int screenHeight = tileSize * maxScreenRow; // 화면 높이 576픽셀
+	public final int maxScreenCol = 40; // 화면에 표시될 최대 가로 수
+	public final int maxScreenRow = 22; // 화면에 표시될 최대 세로 수
+	public final int screenWidth = tileSize * maxScreenCol; // 화면 너비 1920 //05/22 1:45 수정
+	public final int screenHeight = tileSize * maxScreenRow; // 화면 높이 1080 //05/22 1:45 수정
 
 	MouseHandler mouseH = new MouseHandler(); // MouseHandler 객체 생성 17일 22:07 추가
 	MouseMotionHandler mouseMotionH = new MouseMotionHandler(); // 18일 12:15 추가
 
-	// 월드 세팅
-	public final int maxWorldCol = 50; // 월드의 최대 가로 수
-	public final int maxWorldRow = 50; // 월드의 최대 세로 수
-	public final int worldWidth = tileSize * maxWorldCol; // 월드 너비
-	public final int worldHeight = tileSize * maxWorldRow; // 월드 높이
+//	// 월드 세팅 //05/22 1:45 일단 주석처리함
+//	public final int maxWorldCol = 50; // 월드의 최대 가로 수
+//	public final int maxWorldRow = 50; // 월드의 최대 세로 수
+//	public final int worldWidth = tileSize * maxWorldCol; // 월드 너비
+//	public final int worldHeight = tileSize * maxWorldRow; // 월드 높이
 
 	// 5월 18일 오후 추가
 	ArrayList<Monster> monsters = new ArrayList<>(); // 몬스터 리스트
